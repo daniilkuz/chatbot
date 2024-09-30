@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Question Answering</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        input, button {
+            padding: 10px;
+            margin: 10px 0;
+            width: 100%;
+            max-width: 400px;
+        }
+        #response {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Задайте вопрос</h1>
+
+    <input type="text" id="questionInput" placeholder="Введите ваш вопрос" />
+    <button onclick="askQuestion()">Отправить</button>
+
+    <div id="response"></div>
+
+    <script>
+
+        const apiHost = "{{ api_host }}";  // Injected by Flask
+
+        async function askQuestion() {
+            const question = document.getElementById('questionInput').value;
+            if (!question) {
+                document.getElementById('response').innerText = "Пожалуйста, введите вопрос";
+                return;
+            }
+
+            try {
+                const response = await fetch(`${apiHost}/ask`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ question })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok.');
+                }
+
+                const data = await response.json();
+                document.getElementById('response').innerText = data.answer;
+            } catch (error) {
+                document.getElementById('response').innerText = `Error: ${error.message}`;
+            }
+        }
+    </script>
+
+</body>
+</html>

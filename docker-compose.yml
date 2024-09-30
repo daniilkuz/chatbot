@@ -1,0 +1,37 @@
+version: '3'
+services:
+  backend:
+    build:
+      context: ./src
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"  # Map container's backend port to host
+    volumes:
+      - ./src:/app  # Sync src folder with the container for live updates
+    depends_on:
+      - ollama
+    environment:
+      # Add any environment variables the backend requires
+      - FLASK_ENV=development
+  
+  frontend:
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"  # Map container's frontend port to host
+    volumes:
+      - ./front:/app  # Sync front folder with the container for live updates
+    depends_on:
+      - backend
+    environment:
+      # Add any environment variables the frontend requires
+      - NODE_ENV=development
+
+  ollama:
+    image: ollama/ollama-model  # Assuming ollama has an official image
+    ports:
+      - "8000:8000"
+    environment:
+      # Add any environment variables needed for ollama
+      - OLLAMA_CONFIG_PATH=/path/to/config
