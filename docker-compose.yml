@@ -29,7 +29,7 @@ services:
       - NODE_ENV=development
 
   ollama:
-    image: ollama/ollama-model  # Assuming ollama has an official image
+    image: ollama/ollama
     ports:
       - "8000:8000"
     environment:
